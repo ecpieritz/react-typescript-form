@@ -14,6 +14,7 @@ const FormularioCadastro: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cadastros, setCadastros] = useState<FormData[]>([]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -70,6 +71,9 @@ const FormularioCadastro: React.FC = () => {
 
       const data = await response.json();
       console.log("CEP encontrado:", data);
+
+      // Simulando o envio para o arquivo JSON local
+      setCadastros((prev) => [...prev, formData]);
       console.log("Formulário enviado com sucesso:", formData);
       setError(null);
     } catch (err) {
@@ -126,6 +130,16 @@ const FormularioCadastro: React.FC = () => {
           {isSubmitting ? "Validando..." : "Cadastrar"}
         </button>
       </form>
+      <div>
+        <h2>Cadastros Enviados</h2>
+        <ul>
+          {cadastros.map((item, index) => (
+            <li key={index}>
+              {item.nome} - {item.email} - {item.cep}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
