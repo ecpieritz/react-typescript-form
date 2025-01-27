@@ -1,0 +1,15 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: beige;
+
+  .registrationForm {
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+  }
+}
