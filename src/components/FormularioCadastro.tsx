@@ -17,6 +17,18 @@ const FormularioCadastro: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cadastros, setCadastros] = useState<FormData[]>([]);
 
+  const checkEmailExistence = async (email: string) => {
+    try {
+      const response = await axios.get("http://localhost:5000/cadastros");
+      const data = response.data;
+      return data.some((item: FormData) => item.email === email);
+    } catch (err) {
+      setError("Error checking email existence.");
+      console.error(err);
+      return false;
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -59,6 +71,13 @@ const FormularioCadastro: React.FC = () => {
 
     if (!/^\d{5}-\d{3}$/.test(formData.cep)) {
       setError("Por favor, insira um CEP válido no formato 00000-000.");
+      return;
+    }
+
+    // Verifica se o email já existe
+    const emailExists = await checkEmailExistence(formData.email);
+    if (emailExists) {
+      setError("Este e-mail já está cadastrado.");
       return;
     }
 
