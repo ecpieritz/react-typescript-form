@@ -1,46 +1,74 @@
-# Getting Started with Create React App
+<h1 align="center"> :memo: React TypeScript Form with Local API :floppy_disk: </h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🖥 Preview
+<p align="center">
+  <img src="xxx" width="700" height="auto">
+</p>
 
-## Available Scripts
+## 📖 About
+<p>A simple form built with React and TypeScript to collect user data (Name, Email, and CEP) and store it in a local JSON database. This project includes client-side validation, loading states, and integration with an external API to validate CEPs.</p>
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🛠 Technologies used
+- React
+- TypeScript
+- JSON Server (for local API)
+- Axios
+- SCSS
+- React-Scripts
+- HTML
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🚀 How to execute the project
 
-### `npm test`
+#### Clone the repository
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone https://github.com/ecpieritz/react-typescript-form.git
+```
+#### Enter directory
 
-### `npm run build`
+```bash
+cd react-typescript-form
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Install dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Run the JSON Server (for local database)
+In one terminal, start the JSON Server:
 
-### `npm run eject`
+```bash
+npm run server
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+This will run the local API at http://localhost:5000, where all submitted data will be stored.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### Run the React Application
+In another terminal, run:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+npm start
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+This will start the React development server. You can view the app at http://localhost:3000.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📊 View the submitted data
+To see the data submitted through the form, open your browser and go to:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+http://localhost:5000/cadastros
+```
+
+This will display all form submissions in JSON format.
+
+---
+
+<p align="right">Developed with :blue_heart: by Emilyn C. Pieritz</p> 
