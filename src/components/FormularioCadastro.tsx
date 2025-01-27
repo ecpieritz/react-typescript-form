@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 interface FormData {
+  id?: number; // ID para identificar cadastros únicos
   nome: string;
   email: string;
   cep: string;
@@ -16,12 +17,13 @@ const FormularioCadastro: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cadastros, setCadastros] = useState<FormData[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null); // Estado para identificar se está editando
 
   const checkEmailExistence = async (email: string) => {
     try {
       const response = await axios.get("http://localhost:5000/cadastros");
       const data = response.data;
-      return data.some((item: FormData) => item.email === email);
+      return data.some((item: FormData) => item.email === email && item.id !== editingId); // Exclui o email do item em edição
     } catch (err) {
       setError("Erro ao verificar a existência do e-mail.");
       console.error(err);
@@ -74,7 +76,6 @@ const FormularioCadastro: React.FC = () => {
       return;
     }
 
-    // Verifica se o email já existe
     const emailExists = await checkEmailExistence(formData.email);
     if (emailExists) {
       setError("Este e-mail já está cadastrado.");
@@ -82,21 +83,54 @@ const FormularioCadastro: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    try {
-      // Enviar o formulário para a API local
-      const response = await axios.post("http://localhost:5000/cadastros", formData);
 
-      if (response.status === 201) {
-        // Atualiza a lista de cadastros
-        setCadastros((prev) => [...prev, formData]);
-        setError(null);
-        console.log("Cadastro enviado com sucesso!");
+    try {
+      if (editingId) {
+        // Atualizar cadastro existente (PUT)
+        const response = await axios.put(
+          `http://localhost:5000/cadastros/${editingId}`,
+          formData
+        );
+
+        if (response.status === 200) {
+          setCadastros((prev) =>
+            prev.map((item) =>
+              item.id === editingId ? { ...formData, id: editingId } : item
+            )
+          );
+          setError(null);
+          console.log("Cadastro atualizado com sucesso!");
+        }
+      } else {
+        // Criar novo cadastro (POST)
+        const response = await axios.post("http://localhost:5000/cadastros", formData);
+
+        if (response.status === 201) {
+          setCadastros((prev) => [...prev, { ...formData, id: response.data.id }]);
+          setError(null);
+          console.log("Cadastro enviado com sucesso!");
+        }
       }
     } catch (err) {
       setError("Erro ao enviar o cadastro.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
+      setFormData({ nome: "", email: "", cep: "" }); // Limpa o formulário
+      setEditingId(null); // Sai do modo de edição
+    }
+  };
+
+  const handleEdit = (id: number) => {
+    const cadastro = cadastros.find((item) => item.id === id);
+    if (cadastro) {
+      setFormData({
+        nome: cadastro.nome,
+        email: cadastro.email,
+        cep: cadastro.cep,
+      });
+      setEditingId(id); // Define o ID que está sendo editado
+      setError(null);
     }
   };
 
@@ -143,15 +177,16 @@ const FormularioCadastro: React.FC = () => {
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Validando..." : "Cadastrar"}
+          {isSubmitting ? "Validando..." : editingId ? "Atualizar" : "Cadastrar"}
         </button>
       </form>
       <div>
         <h2>Cadastros Enviados</h2>
         <ul>
-          {cadastros.map((item, index) => (
-            <li key={index}>
-              {item.nome} - {item.email} - {item.cep}
+          {cadastros.map((item) => (
+            <li key={item.id}>
+              {item.nome} - {item.email} - {item.cep}{" "}
+              <button onClick={() => handleEdit(item.id!)}>Editar</button>
             </li>
           ))}
         </ul>
