@@ -15,10 +15,10 @@ const FormularioCadastro: React.FC = () => {
     cep: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cadastros, setCadastros] = useState<FormData[]>([]);
-  const [editingId, setEditingId] = useState<number | null>(null); // Estado para identificar se está editando
-  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null); // Estado para mensagem de feedback
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const checkEmailExistence = async (email: string) => {
     try {
@@ -99,7 +99,7 @@ const FormularioCadastro: React.FC = () => {
               item.id === editingId ? { ...formData, id: editingId } : item
             )
           );
-          setFeedbackMessage("Cadastro atualizado com sucesso!");
+          setSuccessMessage("Cadastro atualizado com sucesso!");
         }
       } else {
         // Criar novo cadastro (POST)
@@ -107,17 +107,16 @@ const FormularioCadastro: React.FC = () => {
 
         if (response.status === 201) {
           setCadastros((prev) => [...prev, { ...formData, id: response.data.id }]);
-          setFeedbackMessage("Cadastro enviado com sucesso!");
+          setSuccessMessage("Cadastro enviado com sucesso!");
         }
       }
     } catch (err) {
-      setFeedbackMessage("Erro ao enviar o cadastro. Tente novamente.");
+      setError("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
       setFormData({ nome: "", email: "", cep: "" }); // Limpa o formulário
       setEditingId(null); // Sai do modo de edição
-      setError(null); // Limpa erros antigos
     }
   };
 
@@ -130,7 +129,7 @@ const FormularioCadastro: React.FC = () => {
         cep: cadastro.cep,
       });
       setEditingId(id); // Define o ID que está sendo editado
-      setFeedbackMessage(null); // Limpa a mensagem de feedback ao entrar no modo de edição
+      setSuccessMessage(null); // Limpa a mensagem de sucesso ao entrar no modo de edição
       setError(null);
     }
   };
@@ -177,11 +176,7 @@ const FormularioCadastro: React.FC = () => {
           </label>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {feedbackMessage && (
-          <p style={{ color: feedbackMessage.includes("Erro") ? "red" : "green" }}>
-            {feedbackMessage}
-          </p>
-        )}
+        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Validando..." : editingId ? "Atualizar" : "Cadastrar"}
         </button>
