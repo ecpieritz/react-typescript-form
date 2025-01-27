@@ -20,13 +20,13 @@ const FormularioCadastro: React.FC = () => {
   const [cadastros, setCadastros] = useState<FormData[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  const checkEmailExistence = async (email: string) => {
+  const checkDuplicate = async (key: "email" | "nome", value: string) => {
     try {
       const response = await axios.get("http://localhost:5000/cadastros");
       const data = response.data;
-      return data.some((item: FormData) => item.email === email && item.id !== editingId); // Exclui o email do item em edição
+      return data.some((item: FormData) => item[key] === value && item.id !== editingId);
     } catch (err) {
-      setError("Erro ao verificar a existência do e-mail.");
+      setError(`Erro ao verificar a existência do ${key}.`);
       console.error(err);
       return false;
     }
@@ -77,9 +77,15 @@ const FormularioCadastro: React.FC = () => {
       return;
     }
 
-    const emailExists = await checkEmailExistence(formData.email);
+    const emailExists = await checkDuplicate("email", formData.email);
     if (emailExists) {
       setError("Este e-mail já está cadastrado.");
+      return;
+    }
+
+    const nameExists = await checkDuplicate("nome", formData.nome);
+    if (nameExists) {
+      setError("Este nome já está cadastrado.");
       return;
     }
 
