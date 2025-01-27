@@ -1,0 +1,16 @@
+{
+  "cadastros": [
+    {
+      "id": "792e",
+      "nome": "Emilyn Caroline Pieritz",
+      "email": "ecpieritz@gmail.com",
+      "cep": "67145-310"
+    },
+    {
+      "id": "d528",
+      "nome": "Ana",
+      "email": "ana@exemplo.com",
+      "cep": "89032-145"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 interface FormData {
   nome: string;
@@ -63,21 +64,17 @@ const FormularioCadastro: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/mockData.json`);
+      // Enviar o formulário para a API local
+      const response = await axios.post("http://localhost:5000/cadastros", formData);
 
-      if (!response.ok) {
-        throw new Error("Erro ao carregar os dados.");
+      if (response.status === 201) {
+        // Atualiza a lista de cadastros
+        setCadastros((prev) => [...prev, formData]);
+        setError(null);
+        console.log("Cadastro enviado com sucesso!");
       }
-
-      const data = await response.json();
-      console.log("CEP encontrado:", data);
-
-      // Simulando o envio para o arquivo JSON local
-      setCadastros((prev) => [...prev, formData]);
-      console.log("Formulário enviado com sucesso:", formData);
-      setError(null);
     } catch (err) {
-      setError("Erro ao buscar os dados do CEP.");
+      setError("Erro ao enviar o cadastro.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
