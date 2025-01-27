@@ -23,7 +23,7 @@ const FormularioCadastro: React.FC = () => {
       const data = response.data;
       return data.some((item: FormData) => item.email === email);
     } catch (err) {
-      setError("Error checking email existence.");
+      setError("Erro ao verificar a existência do e-mail.");
       console.error(err);
       return false;
     }
@@ -32,8 +32,8 @@ const FormularioCadastro: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    if (name === "nome" && /\d/.test(value)) {
-      setError("O campo Nome não pode conter números.");
+    if (name === "nome" && /[^a-zA-Z\s]/.test(value)) {
+      setError("O campo Nome não deve conter números.");
       return;
     }
 
