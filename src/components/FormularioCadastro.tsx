@@ -18,6 +18,7 @@ const FormularioCadastro: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cadastros, setCadastros] = useState<FormData[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null); // Estado para identificar se está editando
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null); // Estado para mensagem de feedback
 
   const checkEmailExistence = async (email: string) => {
     try {
@@ -98,8 +99,7 @@ const FormularioCadastro: React.FC = () => {
               item.id === editingId ? { ...formData, id: editingId } : item
             )
           );
-          setError(null);
-          console.log("Cadastro atualizado com sucesso!");
+          setFeedbackMessage("Cadastro atualizado com sucesso!");
         }
       } else {
         // Criar novo cadastro (POST)
@@ -107,17 +107,17 @@ const FormularioCadastro: React.FC = () => {
 
         if (response.status === 201) {
           setCadastros((prev) => [...prev, { ...formData, id: response.data.id }]);
-          setError(null);
-          console.log("Cadastro enviado com sucesso!");
+          setFeedbackMessage("Cadastro enviado com sucesso!");
         }
       }
     } catch (err) {
-      setError("Erro ao enviar o cadastro.");
+      setFeedbackMessage("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
       setFormData({ nome: "", email: "", cep: "" }); // Limpa o formulário
       setEditingId(null); // Sai do modo de edição
+      setError(null); // Limpa erros antigos
     }
   };
 
@@ -130,6 +130,7 @@ const FormularioCadastro: React.FC = () => {
         cep: cadastro.cep,
       });
       setEditingId(id); // Define o ID que está sendo editado
+      setFeedbackMessage(null); // Limpa a mensagem de feedback ao entrar no modo de edição
       setError(null);
     }
   };
@@ -176,6 +177,11 @@ const FormularioCadastro: React.FC = () => {
           </label>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
+        {feedbackMessage && (
+          <p style={{ color: feedbackMessage.includes("Erro") ? "red" : "green" }}>
+            {feedbackMessage}
+          </p>
+        )}
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Validando..." : editingId ? "Atualizar" : "Cadastrar"}
         </button>
