@@ -1,4 +1,3 @@
-// FormularioCadastro.tsx
 import React, { useState } from "react";
 
 interface FormData {
@@ -63,12 +62,10 @@ const FormularioCadastro: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(
-        `https://brasilapi.com.br/api/cep/v1/${formData.cep.replace("-", "")}`
-      );
+      const response = await fetch(`/mockData.json`);
 
       if (!response.ok) {
-        throw new Error("CEP inválido ou não encontrado.");
+        throw new Error("Erro ao carregar os dados.");
       }
 
       const data = await response.json();
@@ -76,7 +73,8 @@ const FormularioCadastro: React.FC = () => {
       console.log("Formulário enviado com sucesso:", formData);
       setError(null);
     } catch (err) {
-      setError("CEP inválido ou não encontrado.");
+      setError("Erro ao buscar os dados do CEP.");
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
