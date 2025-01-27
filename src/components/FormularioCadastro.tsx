@@ -14,20 +14,19 @@ const FormularioCadastro: React.FC = () => {
     cep: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Validação específica para o campo "nome" (não aceita números)
     if (name === "nome" && /\d/.test(value)) {
       setError("O campo Nome não pode conter números.");
       return;
     }
 
-    // Validação específica para o campo "cep" (somente números, com máscara)
     if (name === "cep") {
-      const numericValue = value.replace(/\D/g, ""); // Remove tudo que não for número
-      const formattedValue = numericValue.replace(/(\d{5})(\d{1,3})/, "$1-$2"); // Aplica a máscara
+      const numericValue = value.replace(/\D/g, "");
+      const formattedValue = numericValue.replace(/(\d{5})(\d{1,3})/, "$1-$2");
       setFormData({
         ...formData,
         [name]: formattedValue,
@@ -40,33 +39,47 @@ const FormularioCadastro: React.FC = () => {
       ...formData,
       [name]: value,
     });
-    setError(null); // Limpa o erro ao digitar novamente
+    setError(null);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Validação de campos obrigatórios
     if (!formData.nome || !formData.email || !formData.cep) {
       setError("Todos os campos são obrigatórios.");
       return;
     }
 
-    // Validação de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Por favor, insira um e-mail válido.");
       return;
     }
 
-    // Validação do CEP (somente números completos)
     if (!/^\d{5}-\d{3}$/.test(formData.cep)) {
       setError("Por favor, insira um CEP válido no formato 00000-000.");
       return;
     }
 
-    setError(null);
-    console.log("Formulário enviado com sucesso:", formData);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(
+        `https://brasilapi.com.br/api/cep/v1/${formData.cep.replace("-", "")}`
+      );
+
+      if (!response.ok) {
+        throw new Error("CEP inválido ou não encontrado.");
+      }
+
+      const data = await response.json();
+      console.log("CEP encontrado:", data);
+      console.log("Formulário enviado com sucesso:", formData);
+      setError(null);
+    } catch (err) {
+      setError("CEP inválido ou não encontrado.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -105,13 +118,15 @@ const FormularioCadastro: React.FC = () => {
               name="cep"
               value={formData.cep}
               onChange={handleInputChange}
-              maxLength={9} // Limita o tamanho do campo ao formato "00000-000"
+              maxLength={9}
               required
             />
           </label>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Cadastrar</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Validando..." : "Cadastrar"}
+        </button>
       </form>
     </div>
   );
