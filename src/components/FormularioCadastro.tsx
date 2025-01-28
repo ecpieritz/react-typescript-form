@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 interface FormData {
@@ -8,7 +8,15 @@ interface FormData {
   cep: string;
 }
 
-const FormularioCadastro: React.FC = () => {
+interface FormularioCadastroProps {
+  cadastroEditado?: FormData;
+  onEditComplete?: () => void;
+}
+
+const FormularioCadastro: React.FC<FormularioCadastroProps> = ({
+  cadastroEditado,
+  onEditComplete,
+}) => {
   const [formData, setFormData] = useState<FormData>({
     nome: "",
     email: "",
@@ -17,27 +25,15 @@ const FormularioCadastro: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const checkDuplicate = async (key: "email" | "nome", value: string) => {
-    try {
-      const response = await axios.get("http://localhost:5000/cadastros");
-      const data = response.data;
-      return data.some((item: FormData) => item[key] === value && item.id !== editingId);
-    } catch (err) {
-      setError(`Erro ao verificar a existência do ${key}.`);
-      console.error(err);
-      return false;
+  useEffect(() => {
+    if (cadastroEditado) {
+      setFormData(cadastroEditado);
     }
-  };
+  }, [cadastroEditado]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    if (name === "nome" && /[^a-zA-Z\s]/.test(value)) {
-      setError("O campo Nome não deve conter números.");
-      return;
-    }
 
     if (name === "cep") {
       const numericValue = value.replace(/\D/g, "");
@@ -76,35 +72,49 @@ const FormularioCadastro: React.FC = () => {
       return;
     }
 
-    const emailExists = await checkDuplicate("email", formData.email);
-    if (emailExists) {
-      setError("Este e-mail já está cadastrado.");
-      return;
-    }
-
-    const nameExists = await checkDuplicate("nome", formData.nome);
-    if (nameExists) {
-      setError("Este nome já está cadastrado.");
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      if (editingId) {
-        await axios.put(`http://localhost:5000/cadastros/${editingId}`, formData);
+      // Checar se já existe um cadastro com o mesmo nome ou e-mail
+      const response = await axios.get("http://localhost:5000/cadastros");
+      const cadastros = response.data;
+
+      const nomeDuplicado = cadastros.some(
+        (cadastro: FormData) =>
+          cadastro.nome === formData.nome && cadastro.id !== formData.id
+      );
+      const emailDuplicado = cadastros.some(
+        (cadastro: FormData) =>
+          cadastro.email === formData.email && cadastro.id !== formData.id
+      );
+
+      if (nomeDuplicado) {
+        setError("Já existe um cadastro com este nome. Por favor, altere o nome.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (emailDuplicado) {
+        setError("Já existe um cadastro com este e-mail. Por favor, altere o e-mail.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (formData.id) {
+        await axios.put(`http://localhost:5000/cadastros/${formData.id}`, formData);
         setSuccessMessage("Cadastro atualizado com sucesso!");
       } else {
         await axios.post("http://localhost:5000/cadastros", formData);
         setSuccessMessage("Cadastro enviado com sucesso!");
       }
+
+      if (onEditComplete) onEditComplete();
+      setFormData({ nome: "", email: "", cep: "" }); // Resetar apenas após sucesso
     } catch (err) {
       setError("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
-      setFormData({ nome: "", email: "", cep: "" });
-      setEditingId(null);
     }
   };
 
@@ -152,7 +162,7 @@ const FormularioCadastro: React.FC = () => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Validando..." : editingId ? "Atualizar" : "Cadastrar"}
+          {isSubmitting ? "Validando..." : formData.id ? "Atualizar" : "Cadastrar"}
         </button>
       </form>
     </div>

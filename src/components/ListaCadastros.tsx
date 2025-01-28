@@ -11,6 +11,7 @@ interface Cadastro {
 const ListaCadastros: React.FC = () => {
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [cadastroEditado, setCadastroEditado] = useState<Cadastro | null>(null);
 
   useEffect(() => {
     const fetchCadastros = async () => {
@@ -26,6 +27,25 @@ const ListaCadastros: React.FC = () => {
     fetchCadastros();
   }, []);
 
+  const handleEdit = (cadastro: Cadastro) => {
+    setCadastroEditado(cadastro);
+  };
+
+  const handleEditComplete = () => {
+    setCadastroEditado(null);
+    const fetchCadastros = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/cadastros");
+        setCadastros(response.data);
+      } catch (err) {
+        setError("Erro ao atualizar a lista de cadastros.");
+        console.error(err);
+      }
+    };
+
+    fetchCadastros();
+  };
+
   return (
     <div>
       <h2>Cadastros Enviados</h2>
@@ -33,7 +53,8 @@ const ListaCadastros: React.FC = () => {
       <ul>
         {cadastros.map((cadastro) => (
           <li key={cadastro.id}>
-            {cadastro.nome} - {cadastro.email} - {cadastro.cep}
+            {cadastro.nome} - {cadastro.email} - {cadastro.cep}{" "}
+            <button onClick={() => handleEdit(cadastro)}>Editar</button>
           </li>
         ))}
       </ul>
