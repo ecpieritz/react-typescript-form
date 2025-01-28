@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 
 interface FormData {
-  id?: number; // ID para identificar cadastros únicos
+  id?: number;
   nome: string;
   email: string;
   cep: string;
 }
 
-interface FormularioCadastroProps {
-  onCadastroSubmit: (cadastro: FormData) => void;
-}
-
-const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ onCadastroSubmit }) => {
+const FormularioCadastro: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     nome: "",
     email: "",
@@ -96,32 +92,19 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ onCadastroSubmi
 
     try {
       if (editingId) {
-        // Atualizar cadastro existente (PUT)
-        const response = await axios.put(
-          `http://localhost:5000/cadastros/${editingId}`,
-          formData
-        );
-
-        if (response.status === 200) {
-          onCadastroSubmit({ ...formData, id: editingId });
-          setSuccessMessage("Cadastro atualizado com sucesso!");
-        }
+        await axios.put(`http://localhost:5000/cadastros/${editingId}`, formData);
+        setSuccessMessage("Cadastro atualizado com sucesso!");
       } else {
-        // Criar novo cadastro (POST)
-        const response = await axios.post("http://localhost:5000/cadastros", formData);
-
-        if (response.status === 201) {
-          onCadastroSubmit({ ...formData, id: response.data.id });
-          setSuccessMessage("Cadastro enviado com sucesso!");
-        }
+        await axios.post("http://localhost:5000/cadastros", formData);
+        setSuccessMessage("Cadastro enviado com sucesso!");
       }
     } catch (err) {
       setError("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
     } finally {
       setIsSubmitting(false);
-      setFormData({ nome: "", email: "", cep: "" }); // Limpa o formulário
-      setEditingId(null); // Sai do modo de edição
+      setFormData({ nome: "", email: "", cep: "" });
+      setEditingId(null);
     }
   };
 
