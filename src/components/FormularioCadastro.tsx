@@ -8,7 +8,11 @@ interface FormData {
   cep: string;
 }
 
-const FormularioCadastro: React.FC = () => {
+interface FormularioCadastroProps {
+  onCadastroSubmit: (cadastro: FormData) => void;
+}
+
+const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ onCadastroSubmit }) => {
   const [formData, setFormData] = useState<FormData>({
     nome: "",
     email: "",
@@ -17,7 +21,6 @@ const FormularioCadastro: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [cadastros, setCadastros] = useState<FormData[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const checkDuplicate = async (key: "email" | "nome", value: string) => {
@@ -100,11 +103,7 @@ const FormularioCadastro: React.FC = () => {
         );
 
         if (response.status === 200) {
-          setCadastros((prev) =>
-            prev.map((item) =>
-              item.id === editingId ? { ...formData, id: editingId } : item
-            )
-          );
+          onCadastroSubmit({ ...formData, id: editingId });
           setSuccessMessage("Cadastro atualizado com sucesso!");
         }
       } else {
@@ -112,7 +111,7 @@ const FormularioCadastro: React.FC = () => {
         const response = await axios.post("http://localhost:5000/cadastros", formData);
 
         if (response.status === 201) {
-          setCadastros((prev) => [...prev, { ...formData, id: response.data.id }]);
+          onCadastroSubmit({ ...formData, id: response.data.id });
           setSuccessMessage("Cadastro enviado com sucesso!");
         }
       }
@@ -123,20 +122,6 @@ const FormularioCadastro: React.FC = () => {
       setIsSubmitting(false);
       setFormData({ nome: "", email: "", cep: "" }); // Limpa o formulário
       setEditingId(null); // Sai do modo de edição
-    }
-  };
-
-  const handleEdit = (id: number) => {
-    const cadastro = cadastros.find((item) => item.id === id);
-    if (cadastro) {
-      setFormData({
-        nome: cadastro.nome,
-        email: cadastro.email,
-        cep: cadastro.cep,
-      });
-      setEditingId(id); // Define o ID que está sendo editado
-      setSuccessMessage(null); // Limpa a mensagem de sucesso ao entrar no modo de edição
-      setError(null);
     }
   };
 
@@ -187,17 +172,6 @@ const FormularioCadastro: React.FC = () => {
           {isSubmitting ? "Validando..." : editingId ? "Atualizar" : "Cadastrar"}
         </button>
       </form>
-      <div>
-        <h2>Cadastros Enviados</h2>
-        <ul>
-          {cadastros.map((item) => (
-            <li key={item.id}>
-              {item.nome} - {item.email} - {item.cep}{" "}
-              <button onClick={() => handleEdit(item.id!)}>Editar</button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };
