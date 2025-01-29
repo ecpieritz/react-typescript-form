@@ -87,11 +87,11 @@
           color: #ACB4BA;
           border: 1px solid #ACB4BA;
           font-size: 18px;
-          transition: color 0.3s ease; // Suaviza a transição da cor
+          transition: color 0.3s ease; 
 
           &:focus {
             color: #000;
-            outline: none; // Remove a borda azul padrão do navegador
+            outline: none;
           }
         }
       }
@@ -127,7 +127,7 @@
       border-collapse: collapse;
     
       &__thead {
-        background-color: #3B454F; // Cor de fundo opcional para o cabeçalho
+        background-color: #3B454F;
         color: #fff;
       }
       
@@ -137,9 +137,8 @@
         text-align: left;
       }
     
-      // Definição das larguras das colunas
-      .table-name, // Primeira coluna (Nome)
-      .table-email { // Segunda coluna (E-mail)
+      .table-name, 
+      .table-email { 
         width: 35%;
       }
     
