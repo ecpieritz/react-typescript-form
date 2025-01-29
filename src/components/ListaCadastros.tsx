@@ -20,15 +20,24 @@ const ListaCadastros: React.FC<ListaCadastrosProps> = ({ onEdit }) => {
   return (
     <div>
       <h2>Lista de Cadastros</h2>
-      <ul>
-        {cadastros.map((cadastro) => (
-          <li key={cadastro.id}>
-            {cadastro.nome} - {cadastro.email} - {cadastro.cep}
-            <button onClick={() => onEdit(cadastro)}>Editar</button>
-            <button onClick={() => handleDelete(cadastro.id!)}>Excluir</button>
-          </li>
-        ))}
-      </ul>
+
+      {cadastros.length === 0 ? (
+        <p style={{ color: "#555", fontStyle: "italic" }}>
+          Nenhuma Pessoa Cadastrada no momento. <br />
+          Assim que houver cadastros, eles serão exibidos aqui. <br />
+          Adicione uma nova pessoa acima para começar.
+        </p>
+      ) : (
+        <ul>
+          {cadastros.map((cadastro) => (
+            <li key={cadastro.id}>
+              {cadastro.nome} - {cadastro.email} - {cadastro.cep}
+              <button onClick={() => onEdit(cadastro)}>Editar</button>
+              <button onClick={() => handleDelete(cadastro.id!)}>Excluir</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

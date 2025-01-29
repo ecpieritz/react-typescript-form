@@ -1,22 +1,16 @@
 {
   "cadastros": [
     {
-      "id": "792e",
+      "id": "c86b",
       "nome": "Emilyn Caroline Pieritz",
       "email": "ecpieritz@gmail.com",
       "cep": "67145-310"
     },
     {
-      "nome": "RuPaul Charles",
-      "email": "rupaul@gmail.com.br",
-      "cep": "67145-320",
-      "id": "b89e"
-    },
-    {
-      "nome": "Helena M",
-      "email": "helena@gmail.com.pt",
-      "cep": "89032-145",
-      "id": "35cd"
+      "id": "8f32",
+      "nome": "Erika",
+      "email": "erika@gmail.com",
+      "cep": "67145-310"
     }
   ]
 }

@@ -105,6 +105,11 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ cadastroEditado
       atualizarCadastros(); // Atualiza a lista após adicionar ou editar
       if (onEditComplete) onEditComplete();
       setFormData({ nome: "", email: "", cep: "" });
+
+      // Adicionando o timer para remover a mensagem de sucesso após 5 segundos
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     } catch (err) {
       setError("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
