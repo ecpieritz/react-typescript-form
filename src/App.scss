@@ -13,6 +13,10 @@
   background-color: #fff;
   padding: 60px;
 
+  .messages {
+    margin-top: 16px;
+  }
+
   .registrationForm {
     width: 100%;
     max-width: 1360px;
@@ -83,6 +87,12 @@
           color: #ACB4BA;
           border: 1px solid #ACB4BA;
           font-size: 18px;
+          transition: color 0.3s ease; // Suaviza a transição da cor
+
+          &:focus {
+            color: #000;
+            outline: none; // Remove a borda azul padrão do navegador
+          }
         }
       }
     }

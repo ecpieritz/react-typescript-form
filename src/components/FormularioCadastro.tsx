@@ -143,12 +143,14 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ cadastroEditado
             </label>
               <input type="text" name="cep" placeholder="Ex.: 00000-000" value={formData.cep} onChange={handleInputChange} maxLength={9} required />
           </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Validando..." : formData.id ? "Atualizar" : "Cadastrar"}
           </button>
         </form>
+        <div className="messages">
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+        </div>
       </div>
     </div>
   );
