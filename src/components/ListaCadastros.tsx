@@ -13,14 +13,18 @@ interface ListaCadastrosProps {
 const ListaCadastros: React.FC<ListaCadastrosProps> = ({ onEdit }) => {
   const { cadastros, atualizarCadastros } = useCadastroContext();
 
-  const handleDelete = async (id: number) => {
-    try {
-      await fetch(`http://localhost:5000/cadastros/${id}`, {
-        method: "DELETE",
-      });
-      atualizarCadastros();
-    } catch (error) {
-      console.error("Erro ao deletar cadastro:", error);
+  const handleDelete = async (id: number, nome: string) => {
+    const confirmDelete = window.confirm(`Você tem certeza que deseja excluir este cadastro? ${nome}`);
+    
+    if (confirmDelete) {
+      try {
+        await fetch(`http://localhost:5000/cadastros/${id}`, {
+          method: "DELETE",
+        });
+        atualizarCadastros();
+      } catch (error) {
+        console.error("Erro ao deletar cadastro:", error);
+      }
     }
   };
 
@@ -62,7 +66,7 @@ const ListaCadastros: React.FC<ListaCadastrosProps> = ({ onEdit }) => {
                 </td>
                 <td className="table-actions" data-label="Ações">
                   <button onClick={() => onEdit(cadastro)}>Editar</button>
-                  <button onClick={() => handleDelete(cadastro.id!)}>Excluir</button>
+                  <button onClick={() => handleDelete(cadastro.id!, cadastro.nome)}>Excluir</button>
                 </td>
               </tr>
             ))}
