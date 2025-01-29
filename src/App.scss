@@ -10,7 +10,6 @@
 .App {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   background-color: #fff;
   padding: 60px;
 
@@ -168,5 +167,121 @@
       }
     }
     
+  }
+}
+
+
+@media (max-width: 768px) {
+  .App {
+    padding: 20px;
+    
+    .registrationForm {
+      width: 100%;
+      max-width: calc(100vw - 20px);
+      
+      &__title {
+        font-size: 24px;
+      }
+
+      &__form {
+        width: calc(100% - 40px);
+        h3 {
+          font-size: 18px;
+        }
+  
+        p {
+          font-size: 14px;
+        }
+  
+        form {
+          flex-direction: column;
+          width: 100%;
+  
+          button {
+            font-size: 14px;
+            margin-top: auto;
+            margin-bottom: auto;
+            width: 100%;
+          }
+        }
+  
+        &__input {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          
+          &.cep {
+            width: 100%;
+          }
+          
+          input {
+            font-size: 14px;
+            width: calc(100% - 20px);
+          }
+
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 460px) {
+  .App {
+    padding: 20px;
+    
+    .registrationForm {
+      width: 100%;
+      max-width: 450px;
+      
+      &__title {
+        font-size: 24px;
+      }
+
+      &__form {
+        width: calc(100vw + 20px);
+
+        form {
+          button {
+            margin-top: 8px;
+            margin-bottom: 0;
+          }
+        }
+  
+        &__input {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          
+          &.cep {
+            width: 100%;
+          }
+          
+          input {
+            font-size: 14px;
+            width: calc(100% - 20px);
+          }
+
+        }
+      }
+    }
+
+    .registrationList {
+      width: 100%;
+      max-width: calc(100vw - 40px);
+  
+      .registrationList__table {
+        width: 100%;
+        max-width: calc(100vw - 40px);
+      
+      
+        .table-registration {
+          width: 20%;
+        }
+        .table-actions {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
   }
 }

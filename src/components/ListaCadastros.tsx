@@ -42,23 +42,27 @@ const ListaCadastros: React.FC<ListaCadastrosProps> = ({ onEdit }) => {
         <table className="registrationList__table">
           <thead className="registrationList__table__thead">
             <tr>
-              <th className="">Nome da Pessoa</th>
-              <th className="">E-mail</th>
-              <th className="">CEP</th>
-              <th className="">Ações</th>
+              <th>Nome da Pessoa</th>
+              <th>E-mail</th>
+              <th>CEP</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody className="registrationList__table__tbody">
             {cadastros.map((cadastro) => (
               <tr key={cadastro.id}>
-                <td className="table-name">{cadastro.nome}</td>
-                <td className="table-email">{cadastro.email}</td>
-                <td className="table-registration">{cadastro.cep}</td>
-                <td className="table-actions">
+                <td className="table-name" data-label="Nome da Pessoa">
+                  {cadastro.nome}
+                </td>
+                <td className="table-email" data-label="E-mail">
+                  {cadastro.email}
+                </td>
+                <td className="table-registration" data-label="CEP">
+                  {cadastro.cep}
+                </td>
+                <td className="table-actions" data-label="Ações">
                   <button onClick={() => onEdit(cadastro)}>Editar</button>
-                  <button onClick={() => handleDelete(cadastro.id!)}>
-                    Excluir
-                  </button>
+                  <button onClick={() => handleDelete(cadastro.id!)}>Excluir</button>
                 </td>
               </tr>
             ))}
