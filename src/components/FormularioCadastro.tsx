@@ -9,13 +9,14 @@ interface FormData {
   cep: string;
 }
 
-const FormularioCadastro: React.FC = () => {
-  const { cadastroEditado, setCadastroEditado } = useCadastroContext();
-  const [formData, setFormData] = useState<FormData>({
-    nome: "",
-    email: "",
-    cep: "",
-  });
+interface FormularioCadastroProps {
+  cadastroEditado?: FormData;
+  onEditComplete?: () => void;
+}
+
+const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ cadastroEditado, onEditComplete }) => {
+  const { cadastros, atualizarCadastros } = useCadastroContext();
+  const [formData, setFormData] = useState<FormData>({ nome: "", email: "", cep: "" });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,19 +33,39 @@ const FormularioCadastro: React.FC = () => {
     if (name === "cep") {
       const numericValue = value.replace(/\D/g, "");
       const formattedValue = numericValue.replace(/(\d{5})(\d{1,3})/, "$1-$2");
-      setFormData({
-        ...formData,
-        [name]: formattedValue,
-      });
+      setFormData({ ...formData, [name]: formattedValue });
       setError(null);
       return;
     }
 
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === "nome" && /\d/.test(value)) {
+      setError("O nome não pode conter números.");
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
     setError(null);
+  };
+
+  const verificarDuplicidade = () => {
+    const nomeExiste = cadastros.some(
+      (cadastro) => cadastro.nome.toLowerCase() === formData.nome.toLowerCase() && cadastro.id !== formData.id
+    );
+    const emailExiste = cadastros.some(
+      (cadastro) => cadastro.email.toLowerCase() === formData.email.toLowerCase() && cadastro.id !== formData.id
+    );
+
+    if (nomeExiste) {
+      setError("Já existe um cadastro com este nome.");
+      return true;
+    }
+
+    if (emailExiste) {
+      setError("Já existe um cadastro com este e-mail.");
+      return true;
+    }
+
+    return false;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -66,33 +87,13 @@ const FormularioCadastro: React.FC = () => {
       return;
     }
 
+    if (verificarDuplicidade()) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const response = await axios.get("http://localhost:5000/cadastros");
-      const cadastros = response.data;
-
-      const nomeDuplicado = cadastros.some(
-        (cadastro: FormData) =>
-          cadastro.nome === formData.nome && cadastro.id !== formData.id
-      );
-      const emailDuplicado = cadastros.some(
-        (cadastro: FormData) =>
-          cadastro.email === formData.email && cadastro.id !== formData.id
-      );
-
-      if (nomeDuplicado) {
-        setError("Já existe um cadastro com este nome. Por favor, altere o nome.");
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (emailDuplicado) {
-        setError("Já existe um cadastro com este e-mail. Por favor, altere o e-mail.");
-        setIsSubmitting(false);
-        return;
-      }
-
       if (formData.id) {
         await axios.put(`http://localhost:5000/cadastros/${formData.id}`, formData);
         setSuccessMessage("Cadastro atualizado com sucesso!");
@@ -101,7 +102,8 @@ const FormularioCadastro: React.FC = () => {
         setSuccessMessage("Cadastro enviado com sucesso!");
       }
 
-      setCadastroEditado(null);
+      atualizarCadastros(); // Atualiza a lista após adicionar ou editar
+      if (onEditComplete) onEditComplete();
       setFormData({ nome: "", email: "", cep: "" });
     } catch (err) {
       setError("Erro ao enviar o cadastro. Tente novamente.");
@@ -118,38 +120,19 @@ const FormularioCadastro: React.FC = () => {
         <div>
           <label>
             Nome:
-            <input
-              type="text"
-              name="nome"
-              value={formData.nome}
-              onChange={handleInputChange}
-              required
-            />
+            <input type="text" name="nome" value={formData.nome} onChange={handleInputChange} required />
           </label>
         </div>
         <div>
           <label>
             Email:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
           </label>
         </div>
         <div>
           <label>
             CEP:
-            <input
-              type="text"
-              name="cep"
-              value={formData.cep}
-              onChange={handleInputChange}
-              maxLength={9}
-              required
-            />
+            <input type="text" name="cep" value={formData.cep} onChange={handleInputChange} maxLength={9} required />
           </label>
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}

@@ -1,46 +1,31 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useCadastroContext } from "./CadastroContext.tsx";
 
-interface Cadastro {
-  id: number;
-  nome: string;
-  email: string;
-  cep: string;
+interface ListaCadastrosProps {
+  onEdit: (cadastro: { id: number; nome: string; email: string; cep: string }) => void;
 }
 
-const ListaCadastros: React.FC = () => {
-  const [cadastros, setCadastros] = useState<Cadastro[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const { setCadastroEditado } = useCadastroContext(); // Usando o contexto
+const ListaCadastros: React.FC<ListaCadastrosProps> = ({ onEdit }) => {
+  const { cadastros, atualizarCadastros } = useCadastroContext();
 
-  useEffect(() => {
-    const fetchCadastros = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/cadastros");
-        setCadastros(response.data);
-      } catch (err) {
-        setError("Erro ao carregar os cadastros. Tente novamente.");
-        console.error(err);
-      }
-    };
-
-    fetchCadastros();
-  }, []);
-
-  const handleEdit = (cadastro: Cadastro) => {
-    setCadastroEditado(cadastro); // Atualiza o contexto com os dados do cadastro a ser editado
+  const handleDelete = async (id: number) => {
+    try {
+      await fetch(`http://localhost:5000/cadastros/${id}`, { method: "DELETE" });
+      atualizarCadastros();
+    } catch (error) {
+      console.error("Erro ao deletar cadastro:", error);
+    }
   };
 
   return (
     <div>
-      <h2>Cadastros Enviados</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <h2>Lista de Cadastros</h2>
       <ul>
         {cadastros.map((cadastro) => (
           <li key={cadastro.id}>
-            {cadastro.nome} - {cadastro.email} - {cadastro.cep}{" "}
-            <button onClick={() => handleEdit(cadastro)}>Editar</button>
+            {cadastro.nome} - {cadastro.email} - {cadastro.cep}
+            <button onClick={() => onEdit(cadastro)}>Editar</button>
+            <button onClick={() => handleDelete(cadastro.id!)}>Excluir</button>
           </li>
         ))}
       </ul>
