@@ -2,7 +2,7 @@
 
 ## 🖥 Preview
 <p align="center">
-  <img src="xxx" width="700" height="auto">
+  <img src="https://github.com/ecpieritz/react-typescript-form/blob/main/public/readme-screenshot.png?raw=true" width="700" height="auto">
 </p>
 
 ## 📖 About
