@@ -84,14 +84,13 @@
         input {
           padding: 8px;
           border-radius: 4px;
-          color: #ACB4BA;
+          color: #000;
           border: 1px solid #ACB4BA;
           font-size: 18px;
           transition: color 0.3s ease; 
 
-          &:focus {
-            color: #000;
-            outline: none;
+          &::placeholder {
+            color: #ACB4BA; 
           }
         }
       }
