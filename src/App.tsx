@@ -11,6 +11,9 @@ const App: React.FC = () => {
     <div className="App">
       <CadastroProvider>
         <FormularioCadastro cadastroEditado={cadastroEditado} onEditComplete={() => setCadastroEditado(null)} />
+
+        <hr />
+
         <ListaCadastros onEdit={setCadastroEditado} />
       </CadastroProvider>
     </div>

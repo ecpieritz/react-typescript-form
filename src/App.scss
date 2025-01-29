@@ -1,16 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  font-family: "Poppins", serif;
+}
+
 .App {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  background-color: beige;
+  background-color: #fff;
   padding: 60px;
 
   .registrationForm {
-    width: 50%;
+    width: 100%;
+    max-width: 1360px;
     margin: auto;
     display: flex;
     flex-direction: column;
+    margin-bottom: 0;
+
+    &__title {
+      text-align: center;
+      color: #1D55CB;
+      font-size: 32px;
+      margin-bottom: 24px;
+    }
+
+    &__form {
+      background-color: #F6F8FD;
+      padding: 16px;
+      border-radius: 8px;
+
+      h3 {
+        font-size: 20px;
+        color: #1D55CB;
+      }
+
+      p {
+        font-size: 16px;
+        margin-bottom: 16px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        width: 100%;
+
+        button {
+          width: 15%;
+          height: 70%;
+          font-size: 18px;
+          margin-top: auto;
+          margin-bottom: 0;
+          padding: 10px;
+          background-color: #1D55CB;
+          border: none;
+          border-radius: 4px;
+          color: #fff;
+
+          &:hover {
+            background-color: #1b4cb4;
+            cursor: pointer;
+          }
+        }
+      }
+
+      &__input {
+        display: flex;
+        flex-direction: column;
+        width: 35%;
+        
+        &.cep {
+          width: 15%;
+        }
+        
+        input {
+          padding: 8px;
+          border-radius: 4px;
+          color: #ACB4BA;
+          border: 1px solid #ACB4BA;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  hr {
+    background-color: #F6F8FD;
+    border: none;
+    height: 2px;
+    width: 100%;
+    max-width: 1360px;
+    margin: 32px auto;
+  }
+
+  .registrationList {
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+
+    &__title{
+      font-size: 24px;
+      margin-bottom: 32px;
+    }
+
+    &__info {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .registrationList__table {
+      width: 100%;
+      border-collapse: collapse;
+    
+      &__thead {
+        background-color: #3B454F; // Cor de fundo opcional para o cabeçalho
+        color: #fff;
+      }
+      
+      th, td {
+        border-bottom: 1px solid #ACB4BA;
+        padding: 10px;
+        text-align: left;
+      }
+    
+      // Definição das larguras das colunas
+      .table-name, // Primeira coluna (Nome)
+      .table-email { // Segunda coluna (E-mail)
+        width: 35%;
+      }
+    
+      .table-registration {
+        width: 20%;
+      }
+      .table-actions {
+        min-width: 10%;
+      }
+    
+      .table-actions {
+        display: flex;
+        gap: 8px;
+    
+        button {
+          padding: 6px 10px;
+          border: none;
+          cursor: pointer;
+          background-color: #007bff;
+          color: white;
+          border-radius: 4px;
+    
+          &:hover {
+            background-color: #0056b3;
+          }
+    
+          &:last-child {
+            background-color: #dc3545;
+    
+            &:hover {
+              background-color: #a71d2a;
+            }
+          }
+        }
+      }
+    }
+    
   }
 }

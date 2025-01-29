@@ -119,33 +119,37 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({ cadastroEditado
   };
 
   return (
-    <div>
-      <h1>Cadastro</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Nome:
-            <input type="text" name="nome" value={formData.nome} onChange={handleInputChange} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            Email:
-            <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            CEP:
-            <input type="text" name="cep" value={formData.cep} onChange={handleInputChange} maxLength={9} required />
-          </label>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Validando..." : formData.id ? "Atualizar" : "Cadastrar"}
-        </button>
-      </form>
+    <div className="registrationForm">
+      <h1 className="registrationForm__title">Plataforma de Cadastro</h1>
+      <div className="registrationForm__form">
+        <h3>Cadastrar Pessoa</h3>
+        <p>Digite abaixo os dados da pessoa que deseja registrar.</p>
+        <form onSubmit={handleSubmit}>
+          <div className="registrationForm__form__input name">
+            <label>
+              Nome
+            </label>
+              <input type="text" name="nome" placeholder="Ex.: Maria da Silva" value={formData.nome} onChange={handleInputChange} required />
+          </div>
+          <div className="registrationForm__form__input email">
+            <label>
+              Email
+            </label>
+              <input type="email" name="email" placeholder="ex.: email@gmail.com" value={formData.email} onChange={handleInputChange} required />
+          </div>
+          <div className="registrationForm__form__input cep">
+            <label>
+              CEP
+            </label>
+              <input type="text" name="cep" placeholder="Ex.: 00000-000" value={formData.cep} onChange={handleInputChange} maxLength={9} required />
+          </div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Validando..." : formData.id ? "Atualizar" : "Cadastrar"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
