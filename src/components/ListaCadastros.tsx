@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useCadastroContext } from "./CadastroContext.tsx";
 
 interface Cadastro {
   id: number;
@@ -11,7 +12,7 @@ interface Cadastro {
 const ListaCadastros: React.FC = () => {
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [cadastroEditado, setCadastroEditado] = useState<Cadastro | null>(null);
+  const { setCadastroEditado } = useCadastroContext(); // Usando o contexto
 
   useEffect(() => {
     const fetchCadastros = async () => {
@@ -28,22 +29,7 @@ const ListaCadastros: React.FC = () => {
   }, []);
 
   const handleEdit = (cadastro: Cadastro) => {
-    setCadastroEditado(cadastro);
-  };
-
-  const handleEditComplete = () => {
-    setCadastroEditado(null);
-    const fetchCadastros = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/cadastros");
-        setCadastros(response.data);
-      } catch (err) {
-        setError("Erro ao atualizar a lista de cadastros.");
-        console.error(err);
-      }
-    };
-
-    fetchCadastros();
+    setCadastroEditado(cadastro); // Atualiza o contexto com os dados do cadastro a ser editado
   };
 
   return (

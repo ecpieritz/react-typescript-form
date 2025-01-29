@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useCadastroContext } from "./CadastroContext.tsx";
 
 interface FormData {
   id?: number;
@@ -8,15 +9,8 @@ interface FormData {
   cep: string;
 }
 
-interface FormularioCadastroProps {
-  cadastroEditado?: FormData;
-  onEditComplete?: () => void;
-}
-
-const FormularioCadastro: React.FC<FormularioCadastroProps> = ({
-  cadastroEditado,
-  onEditComplete,
-}) => {
+const FormularioCadastro: React.FC = () => {
+  const { cadastroEditado, setCadastroEditado } = useCadastroContext();
   const [formData, setFormData] = useState<FormData>({
     nome: "",
     email: "",
@@ -75,7 +69,6 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({
     setIsSubmitting(true);
 
     try {
-      // Checar se já existe um cadastro com o mesmo nome ou e-mail
       const response = await axios.get("http://localhost:5000/cadastros");
       const cadastros = response.data;
 
@@ -108,8 +101,8 @@ const FormularioCadastro: React.FC<FormularioCadastroProps> = ({
         setSuccessMessage("Cadastro enviado com sucesso!");
       }
 
-      if (onEditComplete) onEditComplete();
-      setFormData({ nome: "", email: "", cep: "" }); // Resetar apenas após sucesso
+      setCadastroEditado(null);
+      setFormData({ nome: "", email: "", cep: "" });
     } catch (err) {
       setError("Erro ao enviar o cadastro. Tente novamente.");
       console.error(err);
